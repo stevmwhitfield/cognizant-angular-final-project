@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    * {
+        @apply box-border;
+    }
+
+    body {
+        @apply font-sans text-base bg-gray-800 text-gray-200 w-full;
+    }
+
+    a {
+        @apply text-inherit;
+    }
+}
