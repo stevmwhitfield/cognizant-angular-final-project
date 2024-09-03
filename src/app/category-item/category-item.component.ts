@@ -12,6 +12,8 @@ export class CategoryItemComponent {
     categories: Category[] = [];
 
     constructor(private categoryService: CategoryService) {
-        this.categories = this.categoryService.getAll();
+        this.categoryService.getAllCategories().subscribe((categories) => {
+            this.categories = categories;
+        });
     }
 }

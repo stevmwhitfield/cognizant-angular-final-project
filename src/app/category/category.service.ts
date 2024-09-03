@@ -1,44 +1,43 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { Category } from './category';
+
+interface CategoryResponse {
+    categoryid: number;
+    categoryname: string;
+    description: string;
+}
 
 @Injectable({
     providedIn: 'root',
 })
 export class CategoryService {
+    private http = inject(HttpClient);
     private categories: Category[] = [];
 
-    constructor() {
-        this.categories = [
-            {
-                categoryId: 1,
-                categoryName: 'Electronics',
-                description: 'Electronic devices and gadgets',
-            },
-            {
-                categoryId: 2,
-                categoryName: 'Fashion',
-                description: 'Clothing, shoes, and accessories',
-            },
-            {
-                categoryId: 3,
-                categoryName: 'Home and Garden',
-                description: 'Furniture, decor, and household items',
-            },
-            {
-                categoryId: 4,
-                categoryName: 'Sports and Outdoors',
-                description:
-                    'Equipment, apparel, and gear for outdoor activities',
-            },
-            {
-                categoryId: 5,
-                categoryName: 'Books and Media',
-                description: 'Books, music, movies, and video games',
-            },
-        ];
-    }
+    baseUrl = 'http://localhost:3000';
 
-    getAll(): Category[] {
-        return this.categories;
+    constructor() {}
+
+    /**
+     * Get a list of all categories from the server
+     * @returns observable of all categories
+     */
+    getAllCategories(): Observable<Category[]> {
+        return this.http.get<Category[]>(`${this.baseUrl}/categories`).pipe(
+            map((categories) => {
+                const categoryList = categories.map(
+                    (json: any) =>
+                        new Category(
+                            json.categoryid,
+                            json.categoryname,
+                            json.description
+                        )
+                );
+                this.categories = categoryList;
+                return categoryList;
+            })
+        );
     }
 }
